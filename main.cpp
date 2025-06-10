@@ -6,11 +6,18 @@
 using namespace std;
 
 const int MAX_SIZE = 5;
+const int DEPTH_LIMIT = 3;
+
+struct gameConfig
+{
+    int mode = 0;
+    int ukuran = 3;
+    int winCondition = 3;
+} gameConfig;
+
+
 int board[MAX_SIZE][MAX_SIZE];
-int mode = 0;
-const int DEPTH_LIMIT = 5;
-int ukuran = 3;
-int winCondition = 3;
+
 
 void clearScreen()
 {
@@ -43,11 +50,11 @@ void tampilkanBoard()
 {
     clearScreen();
     banner();
-    cout << "\n=== TIC TAC TOE (" << ukuran << "x" << ukuran << ") ===\n\n";
+    cout << "\n=== TIC TAC TOE (" << gameConfig.ukuran << "x" << gameConfig.ukuran << ") ===\n\n";
 
-    for (int i = 0; i < ukuran; ++i)
+    for (int i = 0; i < gameConfig.ukuran; ++i)
     {
-        for (int j = 0; j < ukuran; ++j)
+        for (int j = 0; j < gameConfig.ukuran; ++j)
         {
             if (board[i][j] == -1)
                 cout << " X ";
@@ -59,13 +66,13 @@ void tampilkanBoard()
                     cout << " ";
                 cout << board[i][j] << " ";
             }
-            if (j < ukuran - 1)
+            if (j < gameConfig.ukuran - 1)
                 cout << "|";
         }
         cout << "\n";
-        if (i < ukuran - 1)
+        if (i < gameConfig.ukuran - 1)
         {
-            for (int k = 0; k < ukuran; ++k)
+            for (int k = 0; k < gameConfig.ukuran; ++k)
             {
                 cout << "----";
             }
@@ -78,9 +85,9 @@ void tampilkanBoard()
 void inisialisasiBoard()
 {
     int angka = 1;
-    for (int i = 0; i < ukuran; ++i)
+    for (int i = 0; i < gameConfig.ukuran; ++i)
     {
-        for (int j = 0; j < ukuran; ++j)
+        for (int j = 0; j < gameConfig.ukuran; ++j)
         {
             board[i][j] = angka++;
         }
@@ -91,7 +98,7 @@ bool cekArah(int x, int y, int dx, int dy, int simbol)
 {
     int count = 1;
     int i = x + dx, j = y + dy;
-    while (i >= 0 && i < ukuran && j >= 0 && j < ukuran && board[i][j] == simbol)
+    while (i >= 0 && i < gameConfig.ukuran && j >= 0 && j < gameConfig.ukuran && board[i][j] == simbol)
     {
         count++;
         i += dx;
@@ -99,13 +106,13 @@ bool cekArah(int x, int y, int dx, int dy, int simbol)
     }
     i = x - dx;
     j = y - dy;
-    while (i >= 0 && i < ukuran && j >= 0 && j < ukuran && board[i][j] == simbol)
+    while (i >= 0 && i < gameConfig.ukuran && j >= 0 && j < gameConfig.ukuran && board[i][j] == simbol)
     {
         count++;
         i -= dx;
         j -= dy;
     }
-    return count >= winCondition;
+    return count >= gameConfig.winCondition;
 }
 
 bool cekMenang(int x, int y, int simbol)
@@ -116,9 +123,9 @@ bool cekMenang(int x, int y, int simbol)
 
 bool papanPenuh()
 {
-    for (int i = 0; i < ukuran; i++)
+    for (int i = 0; i < gameConfig.ukuran; i++)
     {
-        for (int j = 0; j < ukuran; j++)
+        for (int j = 0; j < gameConfig.ukuran; j++)
         {
             if (board[i][j] > 0)
                 return false;
@@ -129,9 +136,9 @@ bool papanPenuh()
 
 int evaluateBoard()
 {
-    for (int i = 0; i < ukuran; i++)
+    for (int i = 0; i < gameConfig.ukuran; i++)
     {
-        for (int j = 0; j < ukuran; j++)
+        for (int j = 0; j < gameConfig.ukuran; j++)
         {
             if (board[i][j] == -1 && cekMenang(i, j, -1))
                 return +10;
@@ -156,15 +163,15 @@ int minimax(int depth, bool isMax)
     if (isMax)
     {
         int best = -1000;
-        for (int i = 0; i < ukuran; i++)
+        for (int i = 0; i < gameConfig.ukuran; i++)
         {
-            for (int j = 0; j < ukuran; j++)
+            for (int j = 0; j < gameConfig.ukuran; j++)
             {
                 if (board[i][j] > 0)
                 {
                     board[i][j] = -1;
                     int val = minimax(depth + 1, false);
-                    board[i][j] = (i * ukuran + j) + 1;
+                    board[i][j] = (i * gameConfig.ukuran + j) + 1;
                     best = max(best, val);
                 }
             }
@@ -174,15 +181,15 @@ int minimax(int depth, bool isMax)
     else
     {
         int best = 1000;
-        for (int i = 0; i < ukuran; i++)
+        for (int i = 0; i < gameConfig.ukuran; i++)
         {
-            for (int j = 0; j < ukuran; j++)
+            for (int j = 0; j < gameConfig.ukuran; j++)
             {
                 if (board[i][j] > 0)
                 {
                     board[i][j] = -2;
                     int val = minimax(depth + 1, true);
-                    board[i][j] = (i * ukuran + j) + 1;
+                    board[i][j] = (i * gameConfig.ukuran + j) + 1;
                     best = min(best, val);
                 }
             }
@@ -196,15 +203,15 @@ void botMove()
     int bestVal = 1000;
     int bestMoveRow = -1, bestMoveCol = -1;
 
-    for (int i = 0; i < ukuran; i++)
+    for (int i = 0; i < gameConfig.ukuran; i++)
     {
-        for (int j = 0; j < ukuran; j++)
+        for (int j = 0; j < gameConfig.ukuran; j++)
         {
             if (board[i][j] > 0)
             {
                 board[i][j] = -2;
                 int moveVal = minimax(0, true);
-                board[i][j] = (i * ukuran + j) + 1;
+                board[i][j] = (i * gameConfig.ukuran + j) + 1;
                 if (moveVal < bestVal)
                 {
                     bestVal = moveVal;
@@ -223,7 +230,7 @@ void botMove()
 
 void clearBoard() {
     int* ptr = &board[0][0];
-    int total = ukuran * ukuran;
+    int total = gameConfig.ukuran * gameConfig.ukuran;
     for (int i = 0; i < total; ++i)
         *(ptr + i) = i + 1;
 }
@@ -240,15 +247,15 @@ void mainGamePvP()
         cout << "Giliran Player " << (giliran == -1 ? "X" : "O") << " (masukkan nomor posisi): ";
         cin >> posisi;
 
-        if (posisi < 1 || posisi > ukuran * ukuran)
+        if (posisi < 1 || posisi > gameConfig.ukuran * gameConfig.ukuran)
         {
             cout << "Input nomor posisi tidak valid.\n";
             system("pause");
             continue;
         }
 
-        int baris = (posisi - 1) / ukuran;
-        int kolom = (posisi - 1) % ukuran;
+        int baris = (posisi - 1) / gameConfig.ukuran;
+        int kolom = (posisi - 1) % gameConfig.ukuran;
 
         if (board[baris][kolom] == -1 || board[baris][kolom] == -2)
         {
@@ -296,15 +303,15 @@ void mainGamePvBot()
             cout << "Giliran Player X (masukkan nomor posisi): ";
             cin >> posisi;
 
-            if (posisi < 1 || posisi > ukuran * ukuran)
+            if (posisi < 1 || posisi > gameConfig.ukuran * gameConfig.ukuran)
             {
                 cout << "Input nomor posisi tidak valid.\n";
                 system("pause");
                 continue;
             }
 
-            int baris = (posisi - 1) / ukuran;
-            int kolom = (posisi - 1) % ukuran;
+            int baris = (posisi - 1) / gameConfig.ukuran;
+            int kolom = (posisi - 1) % gameConfig.ukuran;
 
             if (board[baris][kolom] == -1 || board[baris][kolom] == -2)
             {
@@ -330,9 +337,9 @@ void mainGamePvBot()
 
             // Cari posisi terakhir bot pasang
             bool botMenang = false;
-            for (int i = 0; i < ukuran && !botMenang; i++)
+            for (int i = 0; i < gameConfig.ukuran && !botMenang; i++)
             {
-                for (int j = 0; j < ukuran && !botMenang; j++)
+                for (int j = 0; j < gameConfig.ukuran && !botMenang; j++)
                 {
                     if (board[i][j] == -2 && cekMenang(i, j, -2))
                     {
@@ -396,7 +403,7 @@ void pilihModePermainan()
         cout << "Input tidak valid. Masukkan 1 atau 2: ";
         cin >> pilihan;
     }
-    mode = pilihan;
+    gameConfig.mode = pilihan;
     cout << "Mode permainan berhasil diset.\n";
     cout << "Tekan enter untuk kembali ke menu utama...";
     cin.ignore();
@@ -431,14 +438,14 @@ void menuUtama()
             break;
         case 2:
 
-            if (mode == 0)
+            if (gameConfig.mode == 0)
             {
                 cout << "Mode permainan belum diset. Silakan pilih mode permainan terlebih dahulu.\n";
                 system("pause");
             }
             else
             {
-                if (mode == 1)
+                if (gameConfig.mode == 1)
                 {
                     clearBoard();  
                     mainGamePvP();
