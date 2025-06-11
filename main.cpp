@@ -5,7 +5,6 @@
 #include <thread>
 using namespace std;
 
-const int MAX_SIZE = 5;
 const int DEPTH_LIMIT = 3;
 
 struct gameConfig
@@ -15,13 +14,11 @@ struct gameConfig
     int winCondition = 3;
 } gameConfig;
 
-
-int board[MAX_SIZE][MAX_SIZE];
-
+int board[3][3];
 
 void clearScreen()
 {
-    system("cls"); 
+    system("cls");
 }
 void banner()
 {
@@ -54,30 +51,19 @@ void tampilkanBoard()
 
     for (int i = 0; i < gameConfig.ukuran; ++i)
     {
-        for (int j = 0; j < gameConfig.ukuran; ++j)
+       for (int j = 0; j < gameConfig.ukuran; ++j)
         {
             if (board[i][j] == -1)
                 cout << " X ";
             else if (board[i][j] == -2)
                 cout << " O ";
             else
-            {
-                if (board[i][j] < 10)
-                    cout << " ";
-                cout << board[i][j] << " ";
-            }
-            if (j < gameConfig.ukuran - 1)
-                cout << "|";
+                cout << " " << board[i][j] << " ";
+            
+            if (j < 2) cout << "|";
         }
         cout << "\n";
-        if (i < gameConfig.ukuran - 1)
-        {
-            for (int k = 0; k < gameConfig.ukuran; ++k)
-            {
-                cout << "----";
-            }
-            cout << "\n";
-        }
+        if (i < 2) cout << "-----------\n";
     }
     cout << "\n";
 }
@@ -226,13 +212,6 @@ void botMove()
     {
         board[bestMoveRow][bestMoveCol] = -2;
     }
-}
-
-void clearBoard() {
-    int* ptr = &board[0][0];
-    int total = gameConfig.ukuran * gameConfig.ukuran;
-    for (int i = 0; i < total; ++i)
-        *(ptr + i) = i + 1;
 }
 
 void mainGamePvP()
@@ -445,14 +424,13 @@ void menuUtama()
             }
             else
             {
+                inisialisasiBoard();
                 if (gameConfig.mode == 1)
                 {
-                    clearBoard();  
                     mainGamePvP();
                 }
                 else
                 {
-                    clearBoard(); 
                     mainGamePvBot();
                 }
             }
