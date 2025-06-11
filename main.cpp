@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <conio.h>
-#include <cstdlib>
-#include <thread>
+
+
 using namespace std;
 
 const int DEPTH_LIMIT = 3;
@@ -311,7 +311,6 @@ void mainGamePvBot()
         else
         {
             cout << "Giliran Bot O...\n";
-            this_thread::sleep_for(chrono::milliseconds(700));
             botMove();
 
             // Cari posisi terakhir bot pasang
