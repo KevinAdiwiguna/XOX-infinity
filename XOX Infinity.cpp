@@ -50,6 +50,7 @@ int pilihKesulitan() {
     cout << "2. Sedang\n";
     cout << "3. Sulit\n";
     cout << "Pilih: ";
+    cout <<"asdasdas";
     cin >> level;
     while (cin.fail() || level < 1 || level > 3) {
         cin.clear(); cin.ignore(1000, '\n');
